@@ -1,13 +1,13 @@
 /** @file croquette.c
- * @brief A non-FP based, C Implementation of a Croquette
+ * @brief A non-FP based, C Implementation of a Dictionary 
  * - Key: String, Value: Anything
  * - Supports Removal with or without Freeing the Value.
- * - Only a single instance of the Croquette is supported.
+ * - Only a single instance of Croquette is supported.
  * - An optional function to free the value is passed in on creation of the croquette.
- * - The Value will NOT be freed or removed from the Croquette on GET.  (Pointer to Value)
+ * - The Value will NOT be freed or removed from Croquette on GET.  (Pointer to Value)
  *
  * @author Kevin Andrea (kandrea)
- * - Copyright Kevin Andrea - 2022
+ * - Copyright Kevin Andrea - 2023
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,11 +19,11 @@
  *
  * @brief enum to declare whether or not to free the value on removal
  *
- * This is stored in the Croquette definition.
+ * This is stored in Croquette definition.
  */
 enum croquette_clear_options {
   Croquette_NoFree_Value = 0,     ///< Do not free the value on removal from Croquette.
-  Croquette_Free_Value = 1        ///< Free the value on removal from the Croquette.
+  Croquette_Free_Value = 1        ///< Free the value on removal from Croquette.
 };
 
 
@@ -36,8 +36,8 @@ enum croquette_clear_options {
  * The key is a String and value is void * to accept any generic usage.
  */
 typedef struct carrier_struct {
-  char *key;                      ///< Key for the Croquette.
-  void *value;                    ///< Value for the Croquette to Store.
+  char *key;                      ///< Key for Croquette.
+  void *value;                    ///< Value for Croquette to Store.
   struct carrier_struct *next;    ///< Next pointer for Separate Chaining.
   struct carrier_struct *prev;    ///< Previous pointer for Separate Chaining.
 } Carrier_s;
@@ -45,9 +45,9 @@ typedef struct carrier_struct {
 /**
  * @struct Croquette_s
  *
- * @brief Main Structure for the Croquette
+ * @brief Main Structure for Croquette
  *
- * This provides the definitions needed for the Croquette, along with all of the functions
+ * This provides the definitions needed for Croquette, along with all of the functions
  *   needed to work with the chosen key and value.
  */
 typedef struct croquette_struct {
@@ -103,12 +103,12 @@ static void free_entry(Carrier_s *entry);
  *
  * Creates a new Croquette to store generic Values with String based Keys.
  * If do_free is True, then free_value is needed.  If not, it should be set to NULL.
- * Rules for the Croquette
+ * Rules for Croquette
  * - Doubles when size > (initial_capacity>>1 + initial_capacity>>2)
  * - Halves when size < (initial_capcity>>2);
  * - Resets to initial_capacity on clear()
  *
- * @param initial_capacity Initial Capacity or 0 for Default Capacity for the Croquette.
+ * @param initial_capacity Initial Capacity or 0 for Default Capacity for Croquette.
  * @param do_free Croquette_NoFree_Value or Croquette_Free_Value to select if it should free on removal.
  * @param free_value Function to free the value if @p do_free is Croquette_Free_Value.
  * @return D_Success on Success
@@ -127,7 +127,7 @@ int croquette_create(int initial_capacity,
 
   // Option to enter 0 (or < 0) to use a default size
   if(initial_capacity <= 0) {
-    initial_capacity = DICTIONARY_DEFAULT_INITIAL_SIZE;
+    initial_capacity = CROQUETTE_DEFAULT_INITIAL_SIZE;
   }
   
   // Verify the functions exist as needed.
@@ -170,7 +170,7 @@ int croquette_create(int initial_capacity,
 }
 
 /**
- * @brief Checks if the Croquette is Empty
+ * @brief Checks if Croquette is Empty
  *
  * @return 1 if Empty
  * @return 0 if Not-Empty
@@ -187,7 +187,7 @@ int croquette_isEmpty() {
 }
 
 /**
- * @brief Gets the number of K,V entries in the Croquette
+ * @brief Gets the number of K,V entries in Croquette
  *
  * @return Size
  * @return D_Error on Error (Error String Available)
@@ -202,7 +202,7 @@ int croquette_size() {
 }
 
 /**
- * @brief Gets the current number of Indices in the Croquette
+ * @brief Gets the current number of Indices in Croquette
  *
  * @return Capacity 
  * @return D_Error on Error (Error String Available)
@@ -217,7 +217,7 @@ int croquette_capacity() {
 }
 
 /**
- * @brief Checks if the Croquette contains a Key
+ * @brief Checks if Croquette contains a Key
  *
  * @param key String based key to check
  * @return True if Key Exists
@@ -304,7 +304,7 @@ static Carrier_s *croquette_find(const char *key) {
 }
 
 /**
- * @brief Add a new Value to the Croquette by Key
+ * @brief Add a new Value to Croquette by Key
  *
  * @param key String based key to add to the croquette.
  * @param value Generic value to put in to the croquette at the key.
@@ -400,7 +400,7 @@ static int rehash(Croquette_Action_e operation) {
 }
 
 /**
- * @brief Clears and Frees all Entries in the Croquette, Removes Croquette
+ * @brief Clears and Frees all Entries in Croquette, Removes Croquette
  * - Always Succeeds (no return)
  */
 void croquette_destroy() {
@@ -455,7 +455,7 @@ int croquette_clear() {
 }
 
 /**
- * @brief Removes an Entry in the Croquette, will Rehash if needed after.
+ * @brief Removes an Entry in Croquette, will Rehash if needed after.
  *
  * Will Remove a given Entry based on its Key
  * - Will only Free the Value if the do_free is set in configuration.
@@ -516,7 +516,7 @@ void croquette_print_keys() {
 }
 
 /**
- * @brief Rehashes the Croquette to the new Capacity (Larger or Smaller)
+ * @brief Rehashes Croquette to the new Capacity (Larger or Smaller)
  * 
  * @param new_capacity The new capacity for the hash table
  * @return D_Success on Successful Rehash
@@ -539,7 +539,7 @@ static int perform_rehash(int new_capacity) {
     return D_Error;
   }
 
-  /* Move the Croquette to the new Table, but hold the Old Table */
+  /* Move Croquette to the new Table, but hold the Old Table */
   Carrier_s **old_sable = croquette->table;
   croquette->table = new_sable;
 
@@ -692,11 +692,11 @@ static int is_key(Carrier_s *entry, const char *key) {
 }
 
 /*
- * @brief Removes a Carrier Entry in the Croquette and Optionally Frees the Value
+ * @brief Removes a Carrier Entry in Croquette and Optionally Frees the Value
  *
  * This function will only free the Value if do_free was configured on Initialization.
  *
- * @param entry The Entry to remove from the Croquette
+ * @param entry The Entry to remove from Croquette
  * @return D_Success on Success
  * @return D_Error on any Error (Error string available)
  */

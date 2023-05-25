@@ -228,7 +228,7 @@ static int test_croquette_create() {
 
   test_comment("Creating a Croquette with 0 Initial Size (Default Test)");
   ret = croquette_create(D_Default_Capacity, D_Do_Free, free_elem, compare_elem);
-  assert(ret == D_Success && croquette_capacity() == DICTIONARY_DEFAULT_INITIAL_SIZE);
+  assert(ret == D_Success && croquette_capacity() == CROQUETTE_DEFAULT_INITIAL_SIZE);
 
   test_comment("Creating a Croquette with Existing Croquette");
   ret = croquette_create(D_Default_Capacity, D_Do_Free, free_elem, compare_elem);
