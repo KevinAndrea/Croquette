@@ -1,3 +1,11 @@
+/** @file croquette_test.c
+ * @brief Unit Tester for the Croquette Library
+ * - Basic Functionality Testing of All Functions
+ * - This file also provides examples (via unit tests) of the use of Croquette
+ *
+ * @author Kevin Andrea (kandrea)
+ * - Copyright Kevin Andrea - 2023
+ */
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
@@ -28,26 +36,47 @@ static int test_croquette_remove_nofree();
 static int test_croquette_clear();
 
 // Testing Struct Definitions
+/**
+ * @struct element
+ *
+ * @brief Sample Data Struct for Testing
+ *
+ * This provides a simple struct showing what can be stored in the Dictionary.
+ */
 typedef struct element {
   char name[MAX_NAME_LEN];
   int value;
 } Element_s;
 
 // Testing Function Definitions
-// Function to free the Value, passed in to Croquette on create
+/**
+ * @brief Function to free the element; pass into Croquette via create.
+ *
+ * @return void
+ */
 static void free_elem(void *elem) {
   if(elem) {
     free(elem);
   }
 }
 
+/**
+ * @brief Function to compare two elements; pass into Croquette via create.
+ *
+ * @return int (<0 if e1 < e2, 0 if e1 == e2, >0 if e1 > e2)
+ */
 static int compare_elem(void *elem1, void *elem2) {
   Element_s *e1 = (Element_s *)elem1;
   Element_s *e2 = (Element_s *)elem2;
-  return(e1->value == e2->value);
+  return(e1->value - e2->value);
 }
 
-// Local Support Function to Create a Symbol
+/**
+ * @brief Function to create an element for testing purposes.
+ * - Element uses dynamic memory, must be freed.
+ *
+ * @return Element_s pointer.
+ */
 static Element_s *create_elem(char *name, int val) {
   Element_s *elem = calloc(1, sizeof(Element_s));
   if(elem == NULL) {
@@ -58,6 +87,11 @@ static Element_s *create_elem(char *name, int val) {
   return elem;
 }
 
+/**
+ * @brief main Function to run the Unit Tests on Croquette
+ *
+ * @return EXIT_SUCCESS on successful execution.
+ */
 int main() {
   int ret = 0;
 
@@ -99,18 +133,35 @@ int main() {
   ret = test_croquette_clear();
   test_end(ret);
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
+/**
+ * @brief Function to start a unit test with a message.
+ * - Increments the test_number to start a new test.  First test will be 1.
+ *
+ * @return void
+ */
 static void test_start(const char *message) {
+  test_number++; // Increment to allow for next test number to be loaded.
   printf("[Test %2d] %s\n", test_number, message);
   printf(".======================\n");
 }
 
+/**
+ * @brief Function to add a comment in line during a test.
+ *
+ * @return void
+ */
 static void test_comment(const char *message) {
   printf("| - %s\n", message);
 }
 
+/**
+ * @brief Function to end a test with a comment based on success status.
+ *
+ * @return void
+ */
 static void test_end(int success) {
   printf("|-----------------------\n");
   if(success == Test_Success) {
@@ -119,11 +170,13 @@ static void test_end(int success) {
     printf("| Failure\n");
   }
   printf("\\______________________\n\n");
-  test_number++; // Increment to allow for next test number to be loaded.
 }
 
-// Prints out Strings for all Error Codes
-// Always Succeeds
+/**
+ * @brief Function to Print out all Error Messages
+ *
+ * @return Test_Success (always succeeds)
+ */
 static int test_print_errors() {
   // Test Setup
   int i =  0;
@@ -139,7 +192,11 @@ static int test_print_errors() {
   return Test_Success;
 }
 
-// Tests all Croquette calls with an Uninitialized Croquette
+/**
+ * @brief Function to Test Functions with Uninitialized Croquette
+ *
+ * @return Test_Success or Test_Failure
+ */
 static int test_uninitialized_croquette() {
   // Test Setup
   int ret = 0;
@@ -172,7 +229,11 @@ static int test_uninitialized_croquette() {
 }
 
 
-// Tests all Relevant Croquette calls with an Invalid Key
+/**
+ * @brief Function to Test Functions with an Invalid Key
+ *
+ * @return Test_Success or Test_Failure
+ */
 static int test_invalid_key() {
   // Test Setup
   int ret = 0;
@@ -207,6 +268,11 @@ static int test_invalid_key() {
   return Test_Success;
 }
 
+/**
+ * @brief Function to Test croquette_create()
+ *
+ * @return Test_Success or Test_Failure
+ */
 static int test_croquette_create() {
   // Test Setup
   int ret = 0;
@@ -250,6 +316,11 @@ static int test_croquette_create() {
   return Test_Success;
 }
 
+/**
+ * @brief Function to Test Croquette Functions when No Keys Stored
+ *
+ * @return Test_Success or Test_Failure
+ */
 static int test_empty_croquette() {
   // Test Setup
   int ret = 0;
@@ -275,6 +346,11 @@ static int test_empty_croquette() {
   return Test_Success;
 }
 
+/**
+ * @brief Function to Test croquette_put()
+ *
+ * @return Test_Success or Test_Failure
+ */
 static int test_croquette_put() {
   // Test Setup
   Element_s *a = create_elem("aaa", 21);
@@ -366,6 +442,11 @@ static int test_croquette_put() {
   return Test_Success;
 }
 
+/**
+ * @brief Function to Test croquette_remove_dofree()
+ *
+ * @return Test_Success or Test_Failure
+ */
 static int test_croquette_remove_dofree() {
   // Test Setup
   Element_s *a = create_elem("aaa", 21);
@@ -435,6 +516,11 @@ static int test_croquette_remove_dofree() {
   return Test_Success;
 }
 
+/**
+ * @brief Function to Test croquette_remove_nofree()
+ *
+ * @return Test_Success or Test_Failure
+ */
 static int test_croquette_remove_nofree() {
   // Test Setup
   Element_s *a = create_elem("aaa", 21);
@@ -511,6 +597,11 @@ static int test_croquette_remove_nofree() {
   return Test_Success;
 }
 
+/**
+ * @brief Function to Test croquette_clear()
+ *
+ * @return Test_Success or Test_Failure
+ */
 static int test_croquette_clear() {
   // Test Setup
   Element_s *a = create_elem("aaa", 42);
