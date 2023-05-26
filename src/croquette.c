@@ -1,3 +1,20 @@
+/*  Croquette: A non-floating point library providing a C implementation of a Dictionary.
+    Copyright (C) 2023 Kevin Andrea
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 /** @file croquette.c
  * @brief A non-FP based, C Implementation of a Dictionary 
  * - Key: String, Value: Anything
@@ -7,7 +24,6 @@
  * - The Value will NOT be freed or removed from Croquette on GET.  (Pointer to Value)
  *
  * @author Kevin Andrea (kandrea)
- * - Copyright Kevin Andrea - 2023
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -57,7 +73,7 @@ typedef struct croquette_struct {
   int base_capacity;                                ///< Base Number of Indices in Croquette 
   struct carrier_struct **table;                    ///< Vector of Carrier Pointers 
   void (*free_value)(void *value);                  ///< Function to call to free the Value
-  int (*value_compare)(void *value1, void *value2); ///< Function to compare two values
+  int (*value_compare)(void *value1, void *value2); ///< Function to compare two values (v1 vs. v2)
 } Croquette_s;
 
 // Macro 'Functions'
@@ -111,6 +127,7 @@ static void free_entry(Carrier_s *entry);
  * @param initial_capacity Initial Capacity or 0 for Default Capacity for Croquette.
  * @param do_free Croquette_NoFree_Value or Croquette_Free_Value to select if it should free on removal.
  * @param free_value Function to free the value if @p do_free is Croquette_Free_Value.
+ * @param value_compare Function to compare values: Returns 0 if equal, <0 if v1 < v2, >0 is v1 > v2
  * @return D_Success on Success
  * @return D_Error on Error (Error String Available)
  */
@@ -326,7 +343,7 @@ int croquette_put(const char *key, void *value) {
   Carrier_s *entry = croquette_find(key);
   if(entry != NULL) {
     /* Check to see if this is a different value (update) */
-    if(!croquette->value_compare(entry->value, value)) {
+    if(croquette->value_compare(entry->value, value)) {
       croquette->free_value(entry->value);
       entry->value = value;
     }
