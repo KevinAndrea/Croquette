@@ -37,7 +37,7 @@ static int test_croquette_clear();
 
 // Testing Struct Definitions
 /**
- * @struct element
+ * @struct Element_s
  *
  * @brief Sample Data Struct for Testing
  *

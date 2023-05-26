@@ -84,22 +84,22 @@ static Croquette_s *croquette = NULL;
 static int croquette_error = 0;
 
 // Strings for the Errors 
-static const char *error_str[D_Num_Errors + 1] = {
-  [D_No_Error] = "No Croquette Errors Encountered",
-  [D_General_Error] = "An Unspecified Croquette Error was Encountered",
-  [D_Uninitialized] = "The Croquette was not Initialized Properly",
-  [D_Unknown_Error] = "An Unknown Error was Encoutered",
-  [D_Invalid_Key] = "The Key is not Valid",
-  [D_Entry_NULL] = "The Entry passed in was Null",
-  [D_Invalid_Capacity] = "The Capacity Given is not Valid",
-  [D_Invalid_Index] = "The Index Given is not Valid",
-  [D_No_Value] = "The Value Given is not Valid",
-  [D_Insufficient_Memory] = "There was a Memory Error (Insuffient Memory)",
-  [D_FreeValue_Missing] = "No Function was Given to Free a Value",
-  [D_ValueCompare_Missing] = "No Function was Given to Compare two Values",
-  [D_Exists] = "The Croquette Already Exists",
-  [D_No_Such_Error] = "No Such Error Exists",
-  [D_Num_Errors] = "This is a Code to Hold the Number of Errors"
+static const char *error_str[C_Num_Errors + 1] = {
+  [C_No_Error] = "No Croquette Errors Encountered",
+  [C_General_Error] = "An Unspecified Croquette Error was Encountered",
+  [C_Uninitialized] = "The Croquette was not Initialized Properly",
+  [C_Unknown_Error] = "An Unknown Error was Encoutered",
+  [C_Invalid_Key] = "The Key is not Valid",
+  [C_Entry_NULL] = "The Entry passed in was Null",
+  [C_Invalid_Capacity] = "The Capacity Given is not Valid",
+  [C_Invalid_Index] = "The Index Given is not Valid",
+  [C_No_Value] = "The Value Given is not Valid",
+  [C_Insufficient_Memory] = "There was a Memory Error (Insuffient Memory)",
+  [C_FreeValue_Missing] = "No Function was Given to Free a Value",
+  [C_ValueCompare_Missing] = "No Function was Given to Compare two Values",
+  [C_Exists] = "The Croquette Already Exists",
+  [C_No_Such_Error] = "No Such Error Exists",
+  [C_Num_Errors] = "This is a Code to Hold the Number of Errors"
 };
 
 // Internal Prototypes - (Private to this Source File Only)
@@ -128,18 +128,18 @@ static void free_entry(Carrier_s *entry);
  * @param do_free Croquette_NoFree_Value or Croquette_Free_Value to select if it should free on removal.
  * @param free_value Function to free the value if @p do_free is Croquette_Free_Value.
  * @param value_compare Function to compare values: Returns 0 if equal, <0 if v1 < v2, >0 is v1 > v2
- * @return D_Success on Success
- * @return D_Error on Error (Error String Available)
+ * @return C_Success on Success
+ * @return C_Error on Error (Error String Available)
  */
 int croquette_create(int initial_capacity, 
                     int do_free, 
                     void (*free_value)(void *value),
                     int (*value_compare)(void *value1, void *value2)) {
-  croquette_set_error(D_No_Error); // Reset Internal error tracker.
+  croquette_set_error(C_No_Error); // Reset Internal error tracker.
   // Only create if it doesn't already exist.
   if(croquette != NULL) {
-    croquette_set_error(D_Exists);
-    return D_Error;
+    croquette_set_error(C_Exists);
+    return C_Error;
   }
 
   // Option to enter 0 (or < 0) to use a default size
@@ -149,28 +149,28 @@ int croquette_create(int initial_capacity,
   
   // Verify the functions exist as needed.
   if(do_free == Croquette_Free_Value && free_value == NULL) {
-    croquette_set_error(D_FreeValue_Missing);
-    return D_Error;
+    croquette_set_error(C_FreeValue_Missing);
+    return C_Error;
   }
   if(value_compare == NULL) {
-    croquette_set_error(D_ValueCompare_Missing);
-    return D_Error;
+    croquette_set_error(C_ValueCompare_Missing);
+    return C_Error;
   }
 
   // Allocate and Verify Memory for Symbol Table
   croquette = calloc(1, sizeof(Croquette_s));
   if(croquette == NULL) {
-    croquette_set_error(D_Insufficient_Memory);
-    return D_Error;
+    croquette_set_error(C_Insufficient_Memory);
+    return C_Error;
   }
 
   // Initialize the Memory for the Symbol Table
   // - This is a 1D array of Pointers to Carrier_s objects.
   croquette->table = calloc(initial_capacity, sizeof(Carrier_s *));
   if(croquette->table == NULL) {
-    croquette_set_error(D_Insufficient_Memory);
+    croquette_set_error(C_Insufficient_Memory);
     free(croquette);
-    return D_Error;
+    return C_Error;
   }
 
   // Initialize the remaining Values 
@@ -183,7 +183,7 @@ int croquette_create(int initial_capacity,
   croquette->free_value = free_value;           // Function to free if do_free is True
   croquette->value_compare = value_compare;     // Function to compare two Values
 
-  return D_Success;
+  return C_Success;
 }
 
 /**
@@ -191,13 +191,13 @@ int croquette_create(int initial_capacity,
  *
  * @return 1 if Empty
  * @return 0 if Not-Empty
- * @return D_Error on Error (Error String Available)
+ * @return C_Error on Error (Error String Available)
  */
 int croquette_isEmpty() {
-  croquette_set_error(D_No_Error); // Reset Internal error tracker.
+  croquette_set_error(C_No_Error); // Reset Internal error tracker.
   if(croquette == NULL) {
-    croquette_set_error(D_Uninitialized);
-    return D_Error;
+    croquette_set_error(C_Uninitialized);
+    return C_Error;
   }
 
   return croquette->size==0;
@@ -207,13 +207,13 @@ int croquette_isEmpty() {
  * @brief Gets the number of K,V entries in Croquette
  *
  * @return Size
- * @return D_Error on Error (Error String Available)
+ * @return C_Error on Error (Error String Available)
  */
 int croquette_size() {
-  croquette_set_error(D_No_Error);
+  croquette_set_error(C_No_Error);
   if(croquette == NULL) {
-    croquette_set_error(D_Uninitialized);
-    return D_Error;
+    croquette_set_error(C_Uninitialized);
+    return C_Error;
   }
   return croquette->size;
 }
@@ -222,13 +222,13 @@ int croquette_size() {
  * @brief Gets the current number of Indices in Croquette
  *
  * @return Capacity 
- * @return D_Error on Error (Error String Available)
+ * @return C_Error on Error (Error String Available)
  */
 int croquette_capacity() {
-  croquette_set_error(D_No_Error);
+  croquette_set_error(C_No_Error);
   if(croquette == NULL) {
-    croquette_set_error(D_Uninitialized);
-    return D_Error;
+    croquette_set_error(C_Uninitialized);
+    return C_Error;
   }
   return croquette->capacity;
 }
@@ -239,17 +239,17 @@ int croquette_capacity() {
  * @param key String based key to check
  * @return True if Key Exists
  * @return False if No Such Key
- * @return D_Error on Error (Error String Available)
+ * @return C_Error on Error (Error String Available)
  */
 int croquette_containsKey(const char *key) {
-  croquette_set_error(D_No_Error);
+  croquette_set_error(C_No_Error);
   if(croquette == NULL) {
-    croquette_set_error(D_Uninitialized);
-    return D_Error;
+    croquette_set_error(C_Uninitialized);
+    return C_Error;
   }
   if(key == NULL || strlen(key) == 0) {
-    croquette_set_error(D_Invalid_Key);
-    return D_Error;
+    croquette_set_error(C_Invalid_Key);
+    return C_Error;
   }
 
   return croquette_find(key)!=NULL;
@@ -263,13 +263,13 @@ int croquette_containsKey(const char *key) {
  * @return NULL if No Such Key or any Errors (Error String Available)
  */
 void *croquette_get(const char *key) {
-  croquette_set_error(D_No_Error);
+  croquette_set_error(C_No_Error);
   if(croquette == NULL) {
-    croquette_set_error(D_Uninitialized);
+    croquette_set_error(C_Uninitialized);
     return NULL;
   }
   if(key == NULL || strlen(key) == 0) {
-    croquette_set_error(D_Invalid_Key);
+    croquette_set_error(C_Invalid_Key);
     return NULL;
   }
 
@@ -285,18 +285,18 @@ void *croquette_get(const char *key) {
  * @return NULL if No Such Key or any Errors (Error String Available)
  */
 static Carrier_s *croquette_find(const char *key) {
-  croquette_set_error(D_No_Error);
+  croquette_set_error(C_No_Error);
   if(croquette == NULL) {
-    croquette_set_error(D_Uninitialized);
+    croquette_set_error(C_Uninitialized);
     return NULL;
   }
   if(key == NULL || strlen(key) == 0) {
-    croquette_set_error(D_Invalid_Key);
+    croquette_set_error(C_Invalid_Key);
     return NULL;
   }
 
   int index = get_index(key);
-  if(index == D_Error) {
+  if(index == C_Error) {
     // croquette_error propagates
     return NULL;
   }
@@ -325,18 +325,18 @@ static Carrier_s *croquette_find(const char *key) {
  *
  * @param key String based key to add to the croquette.
  * @param value Generic value to put in to the croquette at the key.
- * @return D_Success on Successful Update/Add
- * @return D_Error on Error (Error String Available)
+ * @return C_Success on Successful Update/Add
+ * @return C_Error on Error (Error String Available)
  */
 int croquette_put(const char *key, void *value) {
-  croquette_set_error(D_No_Error);
+  croquette_set_error(C_No_Error);
   if(croquette == NULL) {
-    croquette_set_error(D_Uninitialized);
-    return D_Error;
+    croquette_set_error(C_Uninitialized);
+    return C_Error;
   }
   if(key == NULL || strlen(key) == 0) {
-    croquette_set_error(D_Invalid_Key);
-    return D_Error;
+    croquette_set_error(C_Invalid_Key);
+    return C_Error;
   }
   
   /* Try and update the existing value */
@@ -347,73 +347,73 @@ int croquette_put(const char *key, void *value) {
       croquette->free_value(entry->value);
       entry->value = value;
     }
-    return D_Success;
+    return C_Success;
   }
 
   /* Entry NULL, so we Need to create a new entry */
   entry = carrier_create(key, value);
   if(entry == NULL) {
-    croquette_set_error(D_Insufficient_Memory);
-    return D_Error;
+    croquette_set_error(C_Insufficient_Memory);
+    return C_Error;
   }
 
   /* Get the hash code and then insert Symbol at the index */
   int index = get_index(entry->key);
-  if(index == D_Error) {
-    return D_Error;
+  if(index == C_Error) {
+    return C_Error;
   }
 
   insert_at_index(index, entry);
 
   /* Assess and ReHash if needed */
-  int rehash_success = rehash(D_Insert);
-  if(rehash_success == D_Error) {
+  int rehash_success = rehash(C_Insert);
+  if(rehash_success == C_Error) {
     // Error string will propagate.
-    return D_Error;
+    return C_Error;
   }
 
-  return D_Success;
+  return C_Success;
 }
 
 /**
  * @brief Assess for a ReHash and ReHash if needed
  *
- * @return D_Success if ReHash not needed or ReHash succeeded.
- * @return D_Error if ReHash was needed and Failed (Error string set).
+ * @return C_Success if ReHash not needed or ReHash succeeded.
+ * @return C_Error if ReHash was needed and Failed (Error string set).
  */
 static int rehash(Croquette_Action_e operation) {
-  croquette_set_error(D_No_Error);
+  croquette_set_error(C_No_Error);
   /* Calculate the load and see if a rehash is needed before insert */
   /* - Doubles when new size > (initial_capacity>>1 + initial_capacity>>2) */
   /* - Special Case to handle int division, if new size is capacity (input on capacity = 1), then double */
   int new_capacity = 0;
   switch(operation) {
-    case D_Insert:
+    case C_Insert:
       if(((croquette->size) > ((croquette->capacity>>1) + (croquette->capacity>>2)) || 
                         (croquette->size) >= croquette->capacity)) {
         new_capacity = croquette->capacity << 1;
       }
       else { // Nothing to do.
-        return D_Success;
+        return C_Success;
       }
       break;
-    case D_Remove:
+    case C_Remove:
       if(croquette->size < (croquette->capacity>>1)) {
          new_capacity = croquette->capacity >> 1;
       }
       else { // Nothing to do.
-        return D_Success;
+        return C_Success;
       }
       break;
     default:
-      return D_Success;
+      return C_Success;
   }
 
   int success = perform_rehash(new_capacity);
-  if(success == D_Error) {
-    return D_Error;
+  if(success == C_Error) {
+    return C_Error;
   }
-  return D_Success;
+  return C_Success;
 }
 
 /**
@@ -426,7 +426,7 @@ void croquette_destroy() {
   }
 
   int ret = croquette_clear();
-  if(ret == D_Error) {
+  if(ret == C_Error) {
     return;
   }
 
@@ -442,14 +442,14 @@ void croquette_destroy() {
  *
  * Clears all entries and resets sizes to initial.
  *
- * @return D_Success on Success
- * @return D_Error on any Failure (Error string set).
+ * @return C_Success on Success
+ * @return C_Error on any Failure (Error string set).
  */
 int croquette_clear() {
-  croquette_set_error(D_No_Error);
+  croquette_set_error(C_No_Error);
   if(croquette == NULL) {
-    croquette_set_error(D_Uninitialized);
-    return D_Error;
+    croquette_set_error(C_Uninitialized);
+    return C_Error;
   }
 
   /* Iterate all Keys and Free Them */
@@ -478,37 +478,37 @@ int croquette_clear() {
  * - Will only Free the Value if the do_free is set in configuration.
  *
  * @param key String based Key to identify which entry to remove.
- * @return D_Success on Successful Removal (or if no Entry was Present)
- * @return D_Error on any Failure (Error string set).
+ * @return C_Success on Successful Removal (or if no Entry was Present)
+ * @return C_Error on any Failure (Error string set).
  */
 int croquette_remove(const char *key) {
-  croquette_set_error(D_No_Error);
+  croquette_set_error(C_No_Error);
   if(croquette == NULL) {
-    croquette_set_error(D_Uninitialized);
-    return D_Error;
+    croquette_set_error(C_Uninitialized);
+    return C_Error;
   }
   if(key == NULL || strlen(key) == 0) {
-    croquette_set_error(D_Invalid_Key);
-    return D_Error;
+    croquette_set_error(C_Invalid_Key);
+    return C_Error;
   }
 
   /* If there's no such key, mission accomplished. */
   Carrier_s *entry = croquette_find(key);
   if(entry == NULL) {
-    return D_Success;
+    return C_Success;
   } else {
     remove_entry(entry);
   }
 
   /* Calculate the load and see if a rehash is needed before insert */
   /* - Halves when size < (initial_capacity>>1) */
-  int rehash_success = rehash(D_Remove);
-  if(rehash_success == D_Error) {
+  int rehash_success = rehash(C_Remove);
+  if(rehash_success == C_Error) {
     // Error string will propagate.
-    return D_Error;
+    return C_Error;
   }
 
-  return D_Success;
+  return C_Success;
 }
 
 /**
@@ -536,24 +536,24 @@ void croquette_print_keys() {
  * @brief Rehashes Croquette to the new Capacity (Larger or Smaller)
  * 
  * @param new_capacity The new capacity for the hash table
- * @return D_Success on Successful Rehash
- * @return D_Error on any Failure (Error string set).
+ * @return C_Success on Successful Rehash
+ * @return C_Error on any Failure (Error string set).
  */
 static int perform_rehash(int new_capacity) {
-  croquette_set_error(D_No_Error);
+  croquette_set_error(C_No_Error);
   if(croquette == NULL) {
-    croquette_set_error(D_Uninitialized);
-    return D_Error;
+    croquette_set_error(C_Uninitialized);
+    return C_Error;
   }
   if(new_capacity <= 0) {
-    croquette_set_error(D_Invalid_Capacity);
-    return D_Error;
+    croquette_set_error(C_Invalid_Capacity);
+    return C_Error;
   }
 
   Carrier_s **new_sable = calloc(new_capacity, sizeof(Carrier_s *));
   if(new_sable == NULL) {
-    croquette_set_error(D_Insufficient_Memory);
-    return D_Error;
+    croquette_set_error(C_Insufficient_Memory);
+    return C_Error;
   }
 
   /* Move Croquette to the new Table, but hold the Old Table */
@@ -585,7 +585,7 @@ static int perform_rehash(int new_capacity) {
     }
   }
   free(old_sable);
-  return D_Success;
+  return C_Success;
 }
 
 /**
@@ -618,10 +618,10 @@ static long hash_code(const char *key) {
  * @return NULL on errors (error string available)
  */
 static Carrier_s *carrier_create(const char *key, void *value) {
-  croquette_set_error(D_No_Error);
+  croquette_set_error(C_No_Error);
   Carrier_s *entry = calloc(1, sizeof(Carrier_s));
   if(entry == NULL) {
-    croquette_set_error(D_Insufficient_Memory);
+    croquette_set_error(C_Insufficient_Memory);
     return NULL;
   }
 
@@ -639,18 +639,18 @@ static Carrier_s *carrier_create(const char *key, void *value) {
  * 
  * @param index The index to insert the Entry into
  * @param entry The entry to insert at that index
- * @return D_Success on Success
- * @return D_Error on Error Condition (Error string available)
+ * @return C_Success on Success
+ * @return C_Error on Error Condition (Error string available)
  */
 static int insert_at_index(int index, Carrier_s *entry) {
-  croquette_set_error(D_No_Error);
+  croquette_set_error(C_No_Error);
   if(croquette == NULL) {
-    croquette_set_error(D_Uninitialized);
-    return D_Error;
+    croquette_set_error(C_Uninitialized);
+    return C_Error;
   }
   if(index < 0 || index > croquette->capacity) {
-    croquette_set_error(D_Invalid_Index);
-    return D_Error;
+    croquette_set_error(C_Invalid_Index);
+    return C_Error;
   }
 
   /* Simple Case, nothing at index, so insert it */
@@ -667,7 +667,7 @@ static int insert_at_index(int index, Carrier_s *entry) {
     entry->prev = walker;
   }
   croquette->size++;
-  return D_Success;
+  return C_Success;
 }
 
 /**
@@ -675,18 +675,18 @@ static int insert_at_index(int index, Carrier_s *entry) {
  *
  * @param key The String key to generate the Index from
  * @return Hashed Index from the Key
- * @return D_General_Error (Error string available)
+ * @return C_General_Error (Error string available)
  */
 static long get_index(const char *key) {
-  croquette_set_error(D_No_Error);
+  croquette_set_error(C_No_Error);
   if(croquette == NULL) {
-    croquette_set_error(D_Uninitialized);
-    return D_General_Error;
+    croquette_set_error(C_Uninitialized);
+    return C_General_Error;
   }
     
   if(key == NULL || strlen(key) == 0) {
-    croquette_set_error(D_Invalid_Key);
-    return D_General_Error;
+    croquette_set_error(C_Invalid_Key);
+    return C_General_Error;
   }
   
   long code = hash_code(key);
@@ -714,14 +714,14 @@ static int is_key(Carrier_s *entry, const char *key) {
  * This function will only free the Value if do_free was configured on Initialization.
  *
  * @param entry The Entry to remove from Croquette
- * @return D_Success on Success
- * @return D_Error on any Error (Error string available)
+ * @return C_Success on Success
+ * @return C_Error on any Error (Error string available)
  */
 static int remove_entry(Carrier_s *entry) {
-  croquette_set_error(D_No_Error);
+  croquette_set_error(C_No_Error);
   if(entry == NULL) {
-    croquette_set_error(D_Entry_NULL);
-    return D_Error;
+    croquette_set_error(C_Entry_NULL);
+    return C_Error;
   }
 
   int index = get_index(entry->key);
@@ -745,7 +745,7 @@ static int remove_entry(Carrier_s *entry) {
   // And adjust the croquette size
   croquette->size--;
 
-  return D_Success;
+  return C_Success;
 }
 
 /**
@@ -756,7 +756,7 @@ static int remove_entry(Carrier_s *entry) {
  * @param entry The Entry to free
  */
 static void free_entry(Carrier_s *entry) {
-  if(croquette != NULL && entry != NULL && croquette->do_free == D_Do_Free) {
+  if(croquette != NULL && entry != NULL && croquette->do_free == C_Do_Free) {
     croquette->free_value(entry->value);
   }
   if(entry->key) {
@@ -769,7 +769,7 @@ static void free_entry(Carrier_s *entry) {
  * @brief [Convenience Function] Prints a Description for the given Croquette Error.
  */
 void croquette_print_error() {
-  if((croquette_error <= D_Num_Errors) && (croquette_error >= 0)) {
+  if((croquette_error <= C_Num_Errors) && (croquette_error >= 0)) {
     printf("[Croquette Error %2d] %s\n", croquette_error, error_str[croquette_error]);
   }
   else {
@@ -780,13 +780,13 @@ void croquette_print_error() {
 /** 
  * @brief Sets a croquette error as a convenience for testing.
  *
- * If the error code is not valid, the code will be set to D_No_Such_Error
+ * If the error code is not valid, the code will be set to C_No_Such_Error
  *
  * @param error Provides an error code to set the croquette_error to.
  */
 void croquette_set_error(Croquette_Error_Code_e error) {
-  if(error < 0 || error > D_Num_Errors) {
-    croquette_error = D_No_Such_Error;
+  if(error < 0 || error > C_Num_Errors) {
+    croquette_error = C_No_Such_Error;
   }
   croquette_error = error;
 }

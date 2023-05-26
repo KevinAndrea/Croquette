@@ -29,40 +29,40 @@
 #define MAX_KEY_SIZE 255    // Max characters per Key
 
 typedef enum croquette_action {
-  D_Insert = 0,
-  D_Remove = 1
+  C_Insert = 0,
+  C_Remove = 1
 } Croquette_Action_e;
 
 enum croquette_returns {
-  D_Error = -1,
-  D_Success = 0,
+  C_Error = -1,
+  C_Success = 0,
 };
 
 enum croquette_defaults {
-  D_Default_Capacity = 0
+  C_Default_Capacity = 0
 };
 
 enum croquette_dofree {
-  D_No_Free = 0,
-  D_Do_Free = 1,
+  C_No_Free = 0,
+  C_Do_Free = 1,
 };
 
 typedef enum croquette_error_codes {
-  D_No_Error = 0,
-  D_General_Error,
-  D_Uninitialized,
-  D_Unknown_Error,
-  D_Invalid_Key,
-  D_Entry_NULL,
-  D_Invalid_Capacity,
-  D_Invalid_Index,
-  D_No_Value,
-  D_Insufficient_Memory,
-  D_FreeValue_Missing,
-  D_ValueCompare_Missing,
-  D_Exists,
-  D_No_Such_Error,
-  D_Num_Errors
+  C_No_Error = 0,
+  C_General_Error,
+  C_Uninitialized,
+  C_Unknown_Error,
+  C_Invalid_Key,
+  C_Entry_NULL,
+  C_Invalid_Capacity,
+  C_Invalid_Index,
+  C_No_Value,
+  C_Insufficient_Memory,
+  C_FreeValue_Missing,
+  C_ValueCompare_Missing,
+  C_Exists,
+  C_No_Such_Error,
+  C_Num_Errors
 } Croquette_Error_Code_e;
 
 
@@ -80,8 +80,8 @@ typedef enum croquette_error_codes {
  * @param initial_capacity Initial Capacity or 0 for Default Capacity for Croquette.
  * @param do_free Croquette_NoFree_Value or Croquette_Free_Value to select if it should free on removal.
  * @param free_value Function to free the value if @p do_free is Croquette_Free_Value.
- * @return D_Success on Success
- * @return D_Error on Error (Error String Available)
+ * @return C_Success on Success
+ * @return C_Error on Error (Error String Available)
  */
 int croquette_create(int initial_capacity, 
                     int do_free, 
@@ -92,21 +92,21 @@ int croquette_create(int initial_capacity,
  *
  * @return 1 if Empty
  * @return 0 if Not-Empty
- * @return D_Error on Error (Error String Available)
+ * @return C_Error on Error (Error String Available)
  */
 int croquette_isEmpty();
 /**
  * @brief Gets the number of K,V entries in Croquette
  *
  * @return Size
- * @return D_Error on Error (Error String Available)
+ * @return C_Error on Error (Error String Available)
  */
 int croquette_size();
 /**
  * @brief Gets the current number of Indices in Croquette
  *
  * @return Capacity 
- * @return D_Error on Error (Error String Available)
+ * @return C_Error on Error (Error String Available)
  */
 int croquette_capacity();
 /**
@@ -115,7 +115,7 @@ int croquette_capacity();
  * @param key String based key to check
  * @return True if Key Exists
  * @return False if No Such Key
- * @return D_Error on Error (Error String Available)
+ * @return C_Error on Error (Error String Available)
  */
 int croquette_containsKey(const char *key);
 /**
@@ -131,15 +131,15 @@ void *croquette_get(const char *key);
  *
  * @param key String based key to add to the croquette.
  * @param value Generic value to put in to the croquette at the key.
- * @return D_Success on Successful Update/Add
- * @return D_Error on Error (Error String Available)
+ * @return C_Success on Successful Update/Add
+ * @return C_Error on Error (Error String Available)
  */
 int croquette_put(const char *key, void *value);
 /**
  * @brief Assess for a ReHash and ReHash if needed
  *
- * @return D_Success if ReHash not needed or ReHash succeeded.
- * @return D_Error if ReHash was needed and Failed (Error string set).
+ * @return C_Success if ReHash not needed or ReHash succeeded.
+ * @return C_Error if ReHash was needed and Failed (Error string set).
  */
 void croquette_destroy();
 /**
@@ -147,8 +147,8 @@ void croquette_destroy();
  *
  * Clears all entries and resets sizes to initial.
  *
- * @return D_Success on Success
- * @return D_Error on any Failure (Error string set).
+ * @return C_Success on Success
+ * @return C_Error on any Failure (Error string set).
  */
 int croquette_clear();
 /**
@@ -158,8 +158,8 @@ int croquette_clear();
  * - Will only Free the Value if the do_free is set in configuration.
  *
  * @param key String based Key to identify which entry to remove.
- * @return D_Success on Successful Removal (or if no Entry was Present)
- * @return D_Error on any Failure (Error string set).
+ * @return C_Success on Successful Removal (or if no Entry was Present)
+ * @return C_Error on any Failure (Error string set).
  */
 int croquette_remove(const char *key);
 /**
@@ -174,7 +174,7 @@ void croquette_print_error();
 /** 
  * @brief Sets a croquette error as a convenience for testing.
  *
- * If the error code is not valid, the code will be set to D_No_Such_Error
+ * If the error code is not valid, the code will be set to C_No_Such_Error
  *
  * @param error Provides an error code to set the croquette_error to.
  */
