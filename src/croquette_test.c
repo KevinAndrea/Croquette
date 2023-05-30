@@ -182,7 +182,7 @@ static int test_print_errors() {
   int i =  0;
 
   // Testing
-  for(i = 0; i < D_Num_Errors; i++) {
+  for(i = 0; i < C_Num_Errors; i++) {
     croquette_set_error(i);
     printf("| ");
     croquette_print_error();
@@ -206,22 +206,22 @@ static int test_uninitialized_croquette() {
   // Testing
   test_comment("Checking all functions without Creating a Croquette");
   ret = croquette_isEmpty();
-  assert(ret == D_Error && croquette_get_error() == D_Uninitialized);
+  assert(ret == C_Error && croquette_get_error() == C_Uninitialized);
   ret = croquette_size();
-  assert(ret == D_Error && croquette_get_error() == D_Uninitialized);
+  assert(ret == C_Error && croquette_get_error() == C_Uninitialized);
   ret = croquette_capacity();
-  assert(ret == D_Error && croquette_get_error() == D_Uninitialized);
+  assert(ret == C_Error && croquette_get_error() == C_Uninitialized);
   ret = croquette_containsKey("aaa");
-  assert(ret == D_Error && croquette_get_error() == D_Uninitialized);
+  assert(ret == C_Error && croquette_get_error() == C_Uninitialized);
   elem = croquette_get("aaa");
-  assert(elem == NULL && ret == D_Error && croquette_get_error() == D_Uninitialized);
+  assert(elem == NULL && ret == C_Error && croquette_get_error() == C_Uninitialized);
   ret = croquette_put("aaa", test_elem);
-  assert(ret == D_Error && croquette_get_error() == D_Uninitialized);
+  assert(ret == C_Error && croquette_get_error() == C_Uninitialized);
   croquette_destroy(); // Will succeed, but adding this for coverage testing
   ret = croquette_clear();
-  assert(ret == D_Error && croquette_get_error() == D_Uninitialized);
+  assert(ret == C_Error && croquette_get_error() == C_Uninitialized);
   ret = croquette_remove("aaa");
-  assert(ret == D_Error && croquette_get_error() == D_Uninitialized);
+  assert(ret == C_Error && croquette_get_error() == C_Uninitialized);
 
   // Test Teardown
   free_elem(test_elem);
@@ -240,27 +240,27 @@ static int test_invalid_key() {
   Element_s *elem = NULL;
   Element_s *test_elem = create_elem("a", 42);
 
-  croquette_create(0, D_Do_Free, free_elem, compare_elem);
+  croquette_create(0, C_Do_Free, free_elem, compare_elem);
 
   // Testing
   test_comment("Testing all relevant functions with an empty key");
   ret = croquette_containsKey("");
-  assert(ret == D_Error && croquette_get_error() == D_Invalid_Key);
+  assert(ret == C_Error && croquette_get_error() == C_Invalid_Key);
   elem = croquette_get("");
-  assert(elem == NULL && ret == D_Error && croquette_get_error() == D_Invalid_Key);
+  assert(elem == NULL && ret == C_Error && croquette_get_error() == C_Invalid_Key);
   ret = croquette_put("", test_elem);
-  assert(ret == D_Error && croquette_get_error() == D_Invalid_Key);
+  assert(ret == C_Error && croquette_get_error() == C_Invalid_Key);
   ret = croquette_remove("");
-  assert(ret == D_Error && croquette_get_error() == D_Invalid_Key);
+  assert(ret == C_Error && croquette_get_error() == C_Invalid_Key);
   test_comment("Testing all relevant functions with a NULL key");
   ret = croquette_containsKey(NULL);
-  assert(ret == D_Error && croquette_get_error() == D_Invalid_Key);
+  assert(ret == C_Error && croquette_get_error() == C_Invalid_Key);
   elem = croquette_get(NULL);
-  assert(elem == NULL && ret == D_Error && croquette_get_error() == D_Invalid_Key);
+  assert(elem == NULL && ret == C_Error && croquette_get_error() == C_Invalid_Key);
   ret = croquette_put(NULL, test_elem);
-  assert(ret == D_Error && croquette_get_error() == D_Invalid_Key);
+  assert(ret == C_Error && croquette_get_error() == C_Invalid_Key);
   ret = croquette_remove(NULL);
-  assert(ret == D_Error && croquette_get_error() == D_Invalid_Key);
+  assert(ret == C_Error && croquette_get_error() == C_Invalid_Key);
 
   // Test Teardown
   croquette_destroy();
@@ -280,30 +280,30 @@ static int test_croquette_create() {
 
   // Testing
   test_comment("Creating a Croquette with Null Free Value and Do_Free (Error)");
-  ret = croquette_create(D_Default_Capacity, D_Do_Free, NULL, compare_elem);
-  assert(ret == D_Error && croquette_get_error() == D_FreeValue_Missing);
+  ret = croquette_create(C_Default_Capacity, C_Do_Free, NULL, compare_elem);
+  assert(ret == C_Error && croquette_get_error() == C_FreeValue_Missing);
 
   test_comment("Creating a Croquette with Null Free Value and No_Free");
-  ret = croquette_create(D_Default_Capacity, D_No_Free, NULL, compare_elem);
-  assert(ret == D_Success);
+  ret = croquette_create(C_Default_Capacity, C_No_Free, NULL, compare_elem);
+  assert(ret == C_Success);
   croquette_destroy();
 
   test_comment("Creating a Croquette with NULL Compare Value (Error)");
-  ret = croquette_create(D_Default_Capacity, D_Do_Free, free_elem, NULL);
-  assert(ret == D_Error && croquette_get_error() == D_ValueCompare_Missing);
+  ret = croquette_create(C_Default_Capacity, C_Do_Free, free_elem, NULL);
+  assert(ret == C_Error && croquette_get_error() == C_ValueCompare_Missing);
 
   test_comment("Creating a Croquette with 0 Initial Size (Default Test)");
-  ret = croquette_create(D_Default_Capacity, D_Do_Free, free_elem, compare_elem);
-  assert(ret == D_Success && croquette_capacity() == CROQUETTE_DEFAULT_INITIAL_SIZE);
+  ret = croquette_create(C_Default_Capacity, C_Do_Free, free_elem, compare_elem);
+  assert(ret == C_Success && croquette_capacity() == CROQUETTE_DEFAULT_INITIAL_SIZE);
 
   test_comment("Creating a Croquette with Existing Croquette");
-  ret = croquette_create(D_Default_Capacity, D_Do_Free, free_elem, compare_elem);
-  assert(ret == D_Error && croquette_get_error() == D_Exists);
+  ret = croquette_create(C_Default_Capacity, C_Do_Free, free_elem, compare_elem);
+  assert(ret == C_Error && croquette_get_error() == C_Exists);
   croquette_destroy();
 
   test_comment("Creating a Croquette with Proper Free Value and Do_Free");
-  ret = croquette_create(cap, D_Do_Free, free_elem, compare_elem);
-  assert(ret == D_Success);
+  ret = croquette_create(cap, C_Do_Free, free_elem, compare_elem);
+  assert(ret == C_Success);
 
   test_comment("Verifying Size and Capacity");
   ret = croquette_size();
@@ -326,7 +326,7 @@ static int test_empty_croquette() {
   int ret = 0;
   Element_s *elem = NULL;
 
-  ret = croquette_create(1, D_Do_Free, free_elem, compare_elem);
+  ret = croquette_create(1, C_Do_Free, free_elem, compare_elem);
 
   // Testing
   test_comment("Checking isEmpty on Empty Croquette");
@@ -335,11 +335,11 @@ static int test_empty_croquette() {
 
   test_comment("Checking For a Key on Empty Croquette");
   ret = croquette_containsKey("aaa");
-  assert(ret == 0 && croquette_get_error() == D_No_Error);
+  assert(ret == 0 && croquette_get_error() == C_No_Error);
 
   test_comment("Checking For a Key (get) on Empty Croquette");
   elem = croquette_get("aaa");
-  assert(elem == NULL && croquette_get_error() == D_No_Error);
+  assert(elem == NULL && croquette_get_error() == C_No_Error);
 
   // Test Teardown
   croquette_destroy();
@@ -365,7 +365,7 @@ static int test_croquette_put() {
   Element_s *elem = NULL;
 
   // Create Croquette with Capacity of 1 (will force doubling)
-  croquette_create(1, D_Do_Free, free_elem, compare_elem);
+  croquette_create(1, C_Do_Free, free_elem, compare_elem);
 
   // Testing
   test_comment("Single Key Put (aaa) -- Should Double Cap from 1 -> 2");
@@ -459,8 +459,8 @@ static int test_croquette_remove_dofree() {
   int ret = 0;
 
   // Create Initital Croquette with keys: [2] bee->cee, [5] dee->eee, [7] aaa
-  croquette_create(1, D_Do_Free, free_elem, compare_elem);
-  assert(ret == D_Success);
+  croquette_create(1, C_Do_Free, free_elem, compare_elem);
+  assert(ret == C_Success);
   croquette_put(a->name, a);
   croquette_put(b->name, b);
   croquette_put(c->name, c);
@@ -477,14 +477,14 @@ static int test_croquette_remove_dofree() {
   assert(!croquette_containsKey("aaa"));
   assert(croquette_size() == 4);
   assert(croquette_capacity() == 8);
-  assert(ret == D_Success);
+  assert(ret == C_Success);
 
   test_comment("Remove of Already Removed Key - (aaa)");
   ret = croquette_remove("aaa");
   assert(!croquette_containsKey("aaa"));
   assert(croquette_size() == 4);
   assert(croquette_capacity() == 8);
-  assert(ret == D_Success);
+  assert(ret == C_Success);
 
   test_comment("Single Key Remove - First (bee)");
   ret = croquette_remove("bee");
@@ -492,7 +492,7 @@ static int test_croquette_remove_dofree() {
   assert(croquette_containsKey("cee"));
   assert(croquette_size() == 3);
   assert(croquette_capacity() == 4);
-  assert(ret == D_Success);
+  assert(ret == C_Success);
 
   test_comment("Single Key Remove - Last (eee)");
   ret = croquette_remove("eee");
@@ -500,7 +500,7 @@ static int test_croquette_remove_dofree() {
   assert(croquette_containsKey("dee"));
   assert(croquette_size() == 2);
   assert(croquette_capacity() == 4);
-  assert(ret == D_Success);
+  assert(ret == C_Success);
 
   test_comment("Adding in a new bee");
   croquette_put(u_b->name, u_b);
@@ -533,8 +533,8 @@ static int test_croquette_remove_nofree() {
   int ret = 0;
 
   // Create Initital Croquette with keys: [2] bee->cee, [5] dee->eee, [7] aaa
-  ret = croquette_create(1, D_No_Free, NULL, compare_elem);
-  assert(ret == D_Success);
+  ret = croquette_create(1, C_No_Free, NULL, compare_elem);
+  assert(ret == C_Success);
   croquette_put(a->name, a);
   croquette_put(b->name, b);
   croquette_put(c->name, c);
@@ -551,14 +551,14 @@ static int test_croquette_remove_nofree() {
   assert(!croquette_containsKey("aaa"));
   assert(croquette_size() == 4);
   assert(croquette_capacity() == 8);
-  assert(ret == D_Success);
+  assert(ret == C_Success);
 
   test_comment("Remove of Already Removed Key - (aaa)");
   ret = croquette_remove("aaa");
   assert(!croquette_containsKey("aaa"));
   assert(croquette_size() == 4);
   assert(croquette_capacity() == 8);
-  assert(ret == D_Success);
+  assert(ret == C_Success);
 
   test_comment("Single Key Remove - First (bee)");
   ret = croquette_remove("bee");
@@ -566,7 +566,7 @@ static int test_croquette_remove_nofree() {
   assert(croquette_containsKey("cee"));
   assert(croquette_size() == 3);
   assert(croquette_capacity() == 4);
-  assert(ret == D_Success);
+  assert(ret == C_Success);
 
   test_comment("Single Key Remove - Last (eee)");
   ret = croquette_remove("eee");
@@ -574,7 +574,7 @@ static int test_croquette_remove_nofree() {
   assert(croquette_containsKey("dee"));
   assert(croquette_size() == 2);
   assert(croquette_capacity() == 4);
-  assert(ret == D_Success);
+  assert(ret == C_Success);
 
   test_comment("Adding in a new bee");
   croquette_put(u_b->name, u_b);
@@ -614,8 +614,8 @@ static int test_croquette_clear() {
   int ret = 0;
 
   // Create Initital Croquette with keys: [2] bee->cee, [5] dee->eee, [7] aaa
-  ret = croquette_create(1, D_Do_Free, free_elem, compare_elem);
-  assert(ret == D_Success);
+  ret = croquette_create(1, C_Do_Free, free_elem, compare_elem);
+  assert(ret == C_Success);
 
   croquette_put(a->name, a);
   croquette_put(b->name, b);
@@ -626,7 +626,7 @@ static int test_croquette_clear() {
   // Testing
   test_comment("Testing Clear");
   ret = croquette_clear();
-  assert(ret == D_Success);
+  assert(ret == C_Success);
 
   assert(!croquette_containsKey("aaa"));
   assert(!croquette_containsKey("bee"));
