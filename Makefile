@@ -50,6 +50,8 @@ $(BINDIR)/croquette_test: $(OBJDIR)/croquette_test.o $(OBJS) $(HDRS) $(INCDIR)
 	$(CC) ${CFLAGS} -o $@ $(SRCOBJS) 
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c 
+	@rm -rf $(OBJDIR)
+	@mkdir $(OBJDIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 # Runs Croquette Self-Test
