@@ -73,7 +73,7 @@ typedef struct croquette_struct {
   int base_capacity;                                ///< Base Number of Indices in Croquette 
   struct carrier_struct **table;                    ///< Vector of Carrier Pointers 
   void (*free_value)(void *value);                  ///< Function to call to free the Value
-  int (*value_compare)(void *value1, void *value2); ///< Function to compare two values (v1 vs. v2)
+  int (*value_compare)(const void *value1, const void *value2); ///< Function to compare two values (v1 vs. v2)
 } Croquette_s;
 
 // Macro 'Functions'
@@ -103,7 +103,8 @@ static const char *error_str[C_Num_Errors + 1] = {
 };
 
 // Internal Prototypes - (Private to this Source File Only)
-static Carrier_s *croquette_find(const char *key);
+static Carrier_s *croquette_find_key(const char *key);
+static Carrier_s *croquette_find_value(const void *value);
 static int perform_rehash(int new_capacity);
 static int rehash();
 static long hash_code(const char *key);
@@ -111,6 +112,7 @@ static Carrier_s *carrier_create(const char *key, void *value);
 static int insert_at_index(int index, Carrier_s *entry);
 static long get_index(const char *key);
 static int is_key(Carrier_s *entry, const char *key);
+static int is_value(Carrier_s *entry, const void *value);
 static int remove_entry(Carrier_s *entry);
 static void free_entry(Carrier_s *entry);
 
@@ -134,7 +136,7 @@ static void free_entry(Carrier_s *entry);
 int croquette_create(int initial_capacity, 
                     int do_free, 
                     void (*free_value)(void *value),
-                    int (*value_compare)(void *value1, void *value2)) {
+                    int (*value_compare)(const void *value1, const void *value2)) {
   croquette_set_error(C_No_Error); // Reset Internal error tracker.
   // Only create if it doesn't already exist.
   if(croquette != NULL) {
@@ -252,7 +254,29 @@ int croquette_containsKey(const char *key) {
     return C_Error;
   }
 
-  return croquette_find(key)!=NULL;
+  return croquette_find_key(key)!=NULL;
+}
+
+/**
+ * @brief Checks if Croquette contains a Value
+ *
+ * @param key Value to check for.
+ * @return True if Value Exists
+ * @return False if No Such Value
+ * @return C_Error on Error (Error String Available)
+ */
+int croquette_containsValue(void *value) {
+  croquette_set_error(C_No_Error);
+  if(croquette == NULL) {
+    croquette_set_error(C_Uninitialized);
+    return C_Error;
+  }
+  if(value == NULL) {
+    croquette_set_error(C_Invalid_Value);
+    return C_Error;
+  }
+
+  return croquette_find_value(value)!=NULL;
 }
 
 /**
@@ -273,7 +297,7 @@ void *croquette_get(const char *key) {
     return NULL;
   }
 
-  Carrier_s *entry = croquette_find(key);
+  Carrier_s *entry = croquette_find_key(key);
   return (entry!=NULL)?entry->value:NULL;
 }
 
@@ -284,7 +308,7 @@ void *croquette_get(const char *key) {
  * @return Carrier_s *entry if Key Exists
  * @return NULL if No Such Key or any Errors (Error String Available)
  */
-static Carrier_s *croquette_find(const char *key) {
+static Carrier_s *croquette_find_key(const char *key) {
   croquette_set_error(C_No_Error);
   if(croquette == NULL) {
     croquette_set_error(C_Uninitialized);
@@ -321,6 +345,41 @@ static Carrier_s *croquette_find(const char *key) {
 }
 
 /**
+ * @brief Finds an entry for a given Key
+ *
+ * @param key String based key to find.
+ * @return Carrier_s *entry if Key Exists
+ * @return NULL if No Such Key or any Errors (Error String Available)
+ */
+static Carrier_s *croquette_find_value(const void *value) {
+  croquette_set_error(C_No_Error);
+  if(croquette == NULL) {
+    croquette_set_error(C_Uninitialized);
+    return NULL;
+  }
+  if(value == NULL) {
+    croquette_set_error(C_Invalid_Value);
+    return NULL;
+  }
+
+  Carrier_s *walker = NULL;
+  int current_index = 0;
+  for(current_index = 0; current_index < croquette->capacity; current_index++) {
+    walker = croquette->table[current_index];
+
+    /* Walk the linked list looking for a matching value */
+    while(walker != NULL) {
+      /* If a match is found, report it */
+      if(is_value(walker, value)) {
+        return walker;
+      }
+      walker = walker->next;
+    }
+  }
+  return NULL;
+}
+
+/**
  * @brief Add a new Value to Croquette by Key
  *
  * @param key String based key to add to the croquette.
@@ -340,7 +399,7 @@ int croquette_put(const char *key, void *value) {
   }
   
   /* Try and update the existing value */
-  Carrier_s *entry = croquette_find(key);
+  Carrier_s *entry = croquette_find_key(key);
   if(entry != NULL) {
     /* Check to see if this is a different value (update) */
     if(croquette->value_compare(entry->value, value)) {
@@ -493,7 +552,7 @@ int croquette_remove(const char *key) {
   }
 
   /* If there's no such key, mission accomplished. */
-  Carrier_s *entry = croquette_find(key);
+  Carrier_s *entry = croquette_find_key(key);
   if(entry == NULL) {
     return C_Success;
   } else {
@@ -706,6 +765,20 @@ static long get_index(const char *key) {
  */
 static int is_key(Carrier_s *entry, const char *key) {
   return !(strncmp(entry->key, key, MAX_KEY_SIZE));
+}
+
+/**
+ * @brief Check if the Value matches the Entry's Value
+ *
+ * The comparison is done via value_compare function.
+ *
+ * @param entry The Entry to compare keys against.
+ * @param value The Value to compare against the Entry's key.
+ * @return True if the Value matches the Entry's Value.
+ * @return False if the Value does not match the Entry's Value.
+ */
+static int is_value(Carrier_s *entry, const void *value) {
+  return (croquette->value_compare(entry->value, value)) == 0;
 }
 
 /*

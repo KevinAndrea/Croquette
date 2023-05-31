@@ -65,7 +65,7 @@ static void free_elem(void *elem) {
  *
  * @return int (<0 if e1 < e2, 0 if e1 == e2, >0 if e1 > e2)
  */
-static int compare_elem(void *elem1, void *elem2) {
+static int compare_elem(const void *elem1, const void *elem2) {
   Element_s *e1 = (Element_s *)elem1;
   Element_s *e2 = (Element_s *)elem2;
   return(e1->value - e2->value);
@@ -363,11 +363,16 @@ static int test_croquette_put() {
   Element_s *u_b = create_elem("bee", 1337);
 
   Element_s *elem = NULL;
+  int success = 0;
 
   // Create Croquette with Capacity of 1 (will force doubling)
   croquette_create(1, C_Do_Free, free_elem, compare_elem);
 
   // Testing
+  test_comment("Single Value Find (aaa)");
+  success = croquette_containsValue(a);
+  assert(success == 0);
+
   test_comment("Single Key Put (aaa) -- Should Double Cap from 1 -> 2");
   croquette_put(a->name, a);
   assert(croquette_size() == 1);
@@ -417,6 +422,10 @@ static int test_croquette_put() {
   elem = croquette_get("aaa");
   assert(elem == a);
   assert(elem->value == 21);
+  
+  test_comment("Single Value Find (aaa)");
+  success = croquette_containsValue(a);
+  assert(success > 0);
 
   test_comment("Checking Key to for Original Value (bee)");
   elem = croquette_get("bee");
