@@ -137,6 +137,15 @@ int croquette_containsValue(void *value);
  */
 void *croquette_get(const char *key);
 /**
+ * @brief Gets the value for a given key. Will not Free the Value Returned.
+ *
+ * @param key String based key to get the value of.
+ * @return void *value if Key Exists
+ * @return default_value if No Such Key
+ * @return NULL on any Errors (Error String Available)
+ */
+void *croquette_getOrDefault(const char *key, void *default_value);
+/**
  * @brief Add a new Value to Croquette by Key
  *
  * @param key String based key to add to the croquette.
