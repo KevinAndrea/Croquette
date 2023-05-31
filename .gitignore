@@ -4,6 +4,9 @@ metrics/
 lib/
 bin/
 
+# Helper Scripts
+plog.sh
+
 # Prerequisites
 *.d
 
