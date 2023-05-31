@@ -53,6 +53,7 @@ typedef enum croquette_error_codes {
   C_Uninitialized,
   C_Unknown_Error,
   C_Invalid_Key,
+  C_Invalid_Value,
   C_Entry_NULL,
   C_Invalid_Capacity,
   C_Invalid_Index,
@@ -86,7 +87,7 @@ typedef enum croquette_error_codes {
 int croquette_create(int initial_capacity, 
                     int do_free, 
                     void (*free_value)(void *value),
-                    int (*value_compare)(void *value1, void *value2));
+                    int (*value_compare)(const void *value1, const void *value2));
 /**
  * @brief Checks if Croquette is Empty
  *
@@ -118,6 +119,15 @@ int croquette_capacity();
  * @return C_Error on Error (Error String Available)
  */
 int croquette_containsKey(const char *key);
+/**
+ * @brief Checks if Croquette contains a Value
+ *
+ * @param key Value to check for.
+ * @return True if Value Exists
+ * @return False if No Such Value
+ * @return C_Error on Error (Error String Available)
+ */
+int croquette_containsValue(void *value);
 /**
  * @brief Gets the value for a given key. Will not Free the Value Returned.
  *
