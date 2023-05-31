@@ -50,15 +50,13 @@ $(BINDIR)/croquette_test: $(OBJDIR)/croquette_test.o $(OBJS) $(HDRS) $(INCDIR)
 	$(CC) ${CFLAGS} -o $@ $(SRCOBJS) 
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c 
-	@rm -rf $(OBJDIR)
-	@mkdir $(OBJDIR)
+	@mkdir -p $(OBJDIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 # Runs Croquette Self-Test
 run_ht: 
-	@echo "Initializing test environment."
-	@rm -rf $(OBJDIR)
-	@mkdir $(OBJDIR)
+	@echo "Initializing main test environment."
+	@mkdir -p $(OBJDIR)
 	$(CC) $(CFLAGS) -c -o $(OBJDIR)/croquette.o $(SRCDIR)/croquette.c 
 	$(CC) $(CFLAGS) -c -o $(OBJDIR)/croquette_test.o $(SRCDIR)/croquette_test.c
 	$(CC) $(CFLAGS) -o $(BINDIR)/croquette_test $(OBJDIR)/croquette_test.o $(OBJDIR)/croquette.o 
@@ -69,8 +67,7 @@ run_ht:
 # Runs a Croquette Memory Self-Test
 run_htm: 
 	@echo "Initializing test environment."
-	@rm -rf $(OBJDIR)
-	@mkdir $(OBJDIR)
+	@mkdir -p $(OBJDIR)
 	$(CC) $(CFLAGS) -c -o $(OBJDIR)/croquette.o $(SRCDIR)/croquette.c 
 	$(CC) $(CFLAGS) -c -o $(OBJDIR)/croquette_test.o $(SRCDIR)/croquette_test.c
 	$(CC) $(CFLAGS) -o $(BINDIR)/croquette_test $(OBJDIR)/croquette_test.o $(OBJDIR)/croquette.o 
@@ -81,8 +78,7 @@ run_htm:
 # Runs a Croquette Self-Test with Coverage Checks
 run_htc: 
 	@echo "Initializing test environment."
-	@rm -rf $(OBJDIR)
-	@mkdir $(OBJDIR)
+	@mkdir -p $(OBJDIR)
 	$(CC) $(CFLAGS) --coverage -c -o $(OBJDIR)/croquette.o $(SRCDIR)/croquette.c
 	$(CC) $(CFLAGS) --coverage -c -o $(OBJDIR)/croquette_test.o $(SRCDIR)/croquette_test.c
 	$(CC) $(CFLAGS) --coverage -o $(BINDIR)/croquette_test $(OBJDIR)/croquette_test.o $(OBJDIR)/croquette.o 
@@ -96,8 +92,7 @@ run_htc:
 # Runs a Croquette Self-Test with Coverage Checks
 run_htp: 
 	@echo "Initializing test environment."
-	@rm -rf $(OBJDIR)
-	@mkdir $(OBJDIR)
+	@mkdir -p $(OBJDIR)
 	$(CC) $(CFLAGS) -pg -c -o $(OBJDIR)/croquette.o $(SRCDIR)/croquette.c 
 	$(CC) $(CFLAGS) -pg -c -o $(OBJDIR)/croquette_test.o $(SRCDIR)/croquette_test.c
 	$(CC) $(CFLAGS) -pg -o $(BINDIR)/croquette_test $(OBJDIR)/croquette_test.o $(OBJDIR)/croquette.o 
