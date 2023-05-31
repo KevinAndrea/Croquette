@@ -1,7 +1,6 @@
 # Documentation Generation
 docs/
 metrics/
-obj/
 lib/
 bin/
 
