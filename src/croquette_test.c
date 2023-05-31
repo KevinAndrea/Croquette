@@ -325,6 +325,7 @@ static int test_empty_croquette() {
   // Test Setup
   int ret = 0;
   Element_s *elem = NULL;
+  Element_s *def = create_elem("Default", 42);
 
   ret = croquette_create(1, C_Do_Free, free_elem, compare_elem);
 
@@ -341,8 +342,13 @@ static int test_empty_croquette() {
   elem = croquette_get("aaa");
   assert(elem == NULL && croquette_get_error() == C_No_Error);
 
+  test_comment("Checking For a Default Value (getOrDefault) on Empty Croquette");
+  elem = croquette_getOrDefault("aaa", def);
+  assert(elem == def && croquette_get_error() == C_No_Error);
+
   // Test Teardown
   croquette_destroy();
+  free(def);
   return Test_Success;
 }
 

@@ -287,6 +287,18 @@ int croquette_containsValue(void *value) {
  * @return NULL if No Such Key or any Errors (Error String Available)
  */
 void *croquette_get(const char *key) {
+  return croquette_getOrDefault(key, NULL);
+}
+
+/**
+ * @brief Gets the value for a given key. Will not Free the Value Returned.
+ *
+ * @param key String based key to get the value of.
+ * @return void *value if Key Exists
+ * @return default_value if No Such Key
+ * @return NULL on any Errors (Error String Available)
+ */
+void *croquette_getOrDefault(const char *key, void *default_value) {
   croquette_set_error(C_No_Error);
   if(croquette == NULL) {
     croquette_set_error(C_Uninitialized);
@@ -298,7 +310,7 @@ void *croquette_get(const char *key) {
   }
 
   Carrier_s *entry = croquette_find_key(key);
-  return (entry!=NULL)?entry->value:NULL;
+  return (entry!=NULL)?entry->value:default_value;
 }
 
 /**
