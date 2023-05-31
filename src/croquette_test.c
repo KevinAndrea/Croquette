@@ -414,8 +414,15 @@ static int test_croquette_put() {
   assert(croquette_size() == 6);
   assert(croquette_capacity() == 8);
 
-  test_comment("Single Key Put (gee) -- Should Double Cap to 16");
-  croquette_put(g->name, g);
+  test_comment("Single Key PutIfAbsent (gee) -- Should Double Cap to 16");
+  elem = croquette_putIfAbsent(g->name, g);
+  assert(elem == NULL);
+  assert(croquette_size() == 7);
+  assert(croquette_capacity() == 16);
+
+  test_comment("Single Key PutIfAbsent (gee) -- Should do Nothing (key exists)");
+  elem = croquette_putIfAbsent(g->name, g);
+  assert(elem == g);
   assert(croquette_size() == 7);
   assert(croquette_capacity() == 16);
 
