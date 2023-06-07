@@ -13,6 +13,7 @@ DEBUG = -g						# -g for GDB debugging
 # Build Environment
 #--------------------------------------------------------------------
 SRCDIR=./src
+TESTDIR=./test
 OBJDIR=./obj
 INCDIR=./inc
 LIBDIR=./lib
@@ -59,7 +60,7 @@ run_ht:
 	@mkdir -p $(OBJDIR)
 	@mkdir -p $(BINDIR)
 	$(CC) $(CFLAGS) -c -o $(OBJDIR)/croquette.o $(SRCDIR)/croquette.c 
-	$(CC) $(CFLAGS) -c -o $(OBJDIR)/croquette_test.o $(SRCDIR)/croquette_test.c
+	$(CC) $(CFLAGS) -c -o $(OBJDIR)/croquette_test.o $(TESTDIR)/croquette_test.c
 	$(CC) $(CFLAGS) -o $(BINDIR)/croquette_test $(OBJDIR)/croquette_test.o $(OBJDIR)/croquette.o 
 	$(BINDIR)/croquette_test
 	@rm -f $(BINDIR)/* $(OBJDIR)/* $(METRICSDIR)/*
@@ -71,7 +72,7 @@ run_htm:
 	@mkdir -p $(OBJDIR)
 	@mkdir -p $(BINDIR)
 	$(CC) $(CFLAGS) -c -o $(OBJDIR)/croquette.o $(SRCDIR)/croquette.c 
-	$(CC) $(CFLAGS) -c -o $(OBJDIR)/croquette_test.o $(SRCDIR)/croquette_test.c
+	$(CC) $(CFLAGS) -c -o $(OBJDIR)/croquette_test.o $(TESTDIR)/croquette_test.c
 	$(CC) $(CFLAGS) -o $(BINDIR)/croquette_test $(OBJDIR)/croquette_test.o $(OBJDIR)/croquette.o 
 	@valgrind -s --leak-check=full --show-leak-kinds=all $(BINDIR)/croquette_test
 	@rm -f $(BINDIR)/* $(OBJDIR)/* $(METRICSDIR)/*
@@ -83,7 +84,7 @@ run_htc:
 	@mkdir -p $(OBJDIR)
 	@mkdir -p $(BINDIR)
 	$(CC) $(CFLAGS) --coverage -c -o $(OBJDIR)/croquette.o $(SRCDIR)/croquette.c
-	$(CC) $(CFLAGS) --coverage -c -o $(OBJDIR)/croquette_test.o $(SRCDIR)/croquette_test.c
+	$(CC) $(CFLAGS) --coverage -c -o $(OBJDIR)/croquette_test.o $(TESTDIR)/croquette_test.c
 	$(CC) $(CFLAGS) --coverage -o $(BINDIR)/croquette_test $(OBJDIR)/croquette_test.o $(OBJDIR)/croquette.o 
 	@$(BINDIR)/croquette_test
 	@gcov $(OBJDIR)/croquette.o > $(METRICSDIR)/cov.out; vim $(METRICSDIR)/cov.out
@@ -98,7 +99,7 @@ run_htp:
 	@mkdir -p $(OBJDIR)
 	@mkdir -p $(BINDIR)
 	$(CC) $(CFLAGS) -pg -c -o $(OBJDIR)/croquette.o $(SRCDIR)/croquette.c 
-	$(CC) $(CFLAGS) -pg -c -o $(OBJDIR)/croquette_test.o $(SRCDIR)/croquette_test.c
+	$(CC) $(CFLAGS) -pg -c -o $(OBJDIR)/croquette_test.o $(TESTDIR)/croquette_test.c
 	$(CC) $(CFLAGS) -pg -o $(BINDIR)/croquette_test $(OBJDIR)/croquette_test.o $(OBJDIR)/croquette.o 
 	@$(BINDIR)/croquette_test
 	@gprof $(BINDIR)/croquette_test > $(METRICSDIR)/croquette_test.prof
