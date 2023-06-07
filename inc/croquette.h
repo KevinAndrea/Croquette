@@ -205,6 +205,13 @@ void croquette_print_keys();
  */
 int croquette_is_error();
 /**
+ * @brief Sets the Croquette Error State to C_No_Error
+ *
+ *  @param None
+ *  @return void
+ */
+void croquette_clear_error();
+/**
  * @brief [Convenience Function] Prints a Description for the given Croquette Error.
  */
 void croquette_print_error();

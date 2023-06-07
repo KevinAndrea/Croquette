@@ -223,6 +223,10 @@ static int test_uninitialized_croquette() {
   ret = croquette_remove("aaa");
   assert(ret == C_Error && croquette_get_error() == C_Uninitialized);
 
+  assert(croquette_is_error() != 0);
+  croquette_clear_error();
+  assert(croquette_is_error() == 0);
+
   // Test Teardown
   free_elem(test_elem);
   return Test_Success;
@@ -338,7 +342,7 @@ static int test_empty_croquette() {
 
   test_comment("Checking For a Key on Empty Croquette");
   ret = croquette_containsKey("aaa");
-  assert(ret == 0 && croquette_get_error() == C_No_Error);
+  assert(ret == 0 && croquette_get_error() == C_No_Error && !croquette_is_error());
 
   test_comment("Checking For a Key (get) on Empty Croquette");
   elem = croquette_get("aaa");
