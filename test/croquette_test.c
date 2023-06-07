@@ -282,10 +282,12 @@ static int test_croquette_create() {
   test_comment("Creating a Croquette with Null Free Value and Do_Free (Error)");
   ret = croquette_create(C_Default_Capacity, C_Do_Free, NULL, compare_elem);
   assert(ret == C_Error && croquette_get_error() == C_FreeValue_Missing);
+  assert(croquette_is_error() != 0);
 
   test_comment("Creating a Croquette with Null Free Value and No_Free");
   ret = croquette_create(C_Default_Capacity, C_No_Free, NULL, compare_elem);
   assert(ret == C_Success);
+  assert(croquette_is_error() == 0);
   croquette_destroy();
 
   test_comment("Creating a Croquette with NULL Compare Value (Error)");
