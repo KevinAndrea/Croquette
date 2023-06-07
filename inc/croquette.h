@@ -196,6 +196,15 @@ int croquette_remove(const char *key);
 void croquette_print_keys();
 
 /**
+ * @brief Returns True if there has been a Croquette Error. 
+ *  - Each Croquette API function begins by clearing errors.
+ *  - The user does not need to initialize this.
+ *
+ *  @param None
+ *  @return int True if any Croquette Errors / 0 (False) If none.
+ */
+int croquette_is_error();
+/**
  * @brief [Convenience Function] Prints a Description for the given Croquette Error.
  */
 void croquette_print_error();
