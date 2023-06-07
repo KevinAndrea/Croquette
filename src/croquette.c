@@ -447,6 +447,24 @@ int croquette_put(const char *key, void *value) {
 }
 
 /**
+ * @brief Add a new Value to Croquette by Key only if Key has no Value
+ *
+ * @param key String based key to add to the croquette.
+ * @param value Generic value to put in to the croquette at the key.
+ * @return NULL if key did not exist and value was added. 
+ * @return value if key did exist, existing value is returned.
+ */
+void *croquette_putIfAbsent(const char *key, void *value) {
+  Carrier_s *entry = croquette_find_key(key);
+  if(entry == NULL) {
+    croquette_put(key, value);
+    return NULL;
+  }
+    
+  return entry->value;
+}
+
+/**
  * @brief Assess for a ReHash and ReHash if needed
  *
  * @return C_Success if ReHash not needed or ReHash succeeded.
