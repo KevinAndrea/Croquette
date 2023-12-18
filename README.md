@@ -1,2 +1,2 @@
 # Croquette
-C-based Dictionary Library
+C-based Hash Map Library

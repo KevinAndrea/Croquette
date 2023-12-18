@@ -1,4 +1,4 @@
-/*  Croquette: A non-floating point library providing a C implementation of a Dictionary.
+/*  Croquette: A non-floating point library providing a C implementation of a Hash Map.
     Copyright (C) 2023 Kevin Andrea
 
     This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 */
 
 /** @file croquette.c
- * @brief A non-FP based, C Implementation of a Dictionary 
+ * @brief A non-FP based, C Implementation of a Hash Map 
  * - Key: String, Value: Anything
  * - Supports Removal with or without Freeing the Value.
  * - Only a single instance of Croquette is supported.

@@ -41,7 +41,7 @@ static int test_croquette_clear();
  *
  * @brief Sample Data Struct for Testing
  *
- * This provides a simple struct showing what can be stored in the Dictionary.
+ * This provides a simple struct showing what can be stored in the Hash Map.
  */
 typedef struct element {
   char name[MAX_NAME_LEN];
